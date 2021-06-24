@@ -1,8 +1,8 @@
-import axios from "axios";
+import request from "../utils/request";
 
 export const reqGetCategoryList = () => {
-  return axios({
+  return request({
     method: "GET",
-    url: "/api/product/getBaseCategoryList",
+    url: "/product/getBaseCategoryList",
   });
 };
