@@ -10,9 +10,8 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor />
-    <!--楼层-->
-    <Floor />
+     <Floor v-for="floor in floors" :key="floor.id" :floor="floor" />
+    
     <!--商标-->
     <Brand />
   </div>
@@ -26,6 +25,7 @@ import Like from "./Like/Like";
 import ListContainer from "./ListContainer/ListContainer";
 import Rank from "./Rank/Rank";
 import TodayRecommend from "./TodayRecommend/TodayRecommend";
+import {reqGetFloors} from '../../api/home'
 export default {
   name: "Home",
   components: {
@@ -36,6 +36,22 @@ export default {
     Rank,
     TodayRecommend,
     TypeNav,
+  },
+  data() {
+    return {
+      floors:[]
+    }
+  },
+  mounted() {
+    //发送请求
+    reqGetFloors()
+      .then((res) => {
+        // console.log(res);
+        this.floors = res;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>
