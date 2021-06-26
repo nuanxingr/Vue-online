@@ -54,25 +54,29 @@ export default {
       解决：$nextTick 保证等页面更新后再触发，只会触发一次
     */
   watch: {
-    imageList() {
-      // $nextTick函数出发了就有值了
-      this.$nextTick(() => {
-        this.swiper = new Swiper(this.$refs.swiper, {
-          cssMode: true,
-          // 导航（左右箭头）
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          // 小圆点
-          pagination: {
-            el: ".swiper-pagination",
-          },
-          loop: true, //无缝轮播
-          autoplay: true, //自动轮播
+    imageList: {
+      handler(imageList) {
+        if (!imageList.length) return;
+        this.$nextTick(() => {
+          this.swiper = new Swiper(this.$refs.swiper, {
+            cssMode: true,
+            // 导航（左右箭头）
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+            // 小圆点
+            pagination: {
+              el: ".swiper-pagination",
+            },
+            loop: true, //无缝轮播
+            autoplay: true, //自动轮播
+          });
+          // console.log(swiper);
         });
-        // console.log(swiper);
-      });
+      },
+      immediate:true
+      // $nextTick函数出发了就有值了
     },
   },
 };
