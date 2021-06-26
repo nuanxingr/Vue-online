@@ -1,8 +1,10 @@
 <template>
   <div>
     <div class="type-nav">
-      <div class="container">
-        <h2 class="all">全部商品分类</h2>
+      <!-- 绑定移出事件 -->
+      <div class="container" @mouseleave="isShow = false">
+        <!-- 绑定移入事件 -->
+        <h2 class="all" @mouseenter="isShow = true">全部商品分类</h2>
         <nav class="nav">
           <a href="###">服装城</a>
           <a href="###">美妆馆</a>
@@ -26,7 +28,8 @@
           - 使用事件委托
             给外层的父级元素绑定点击事件，通过e.target来获取触发事件的目标元素
        -->
-        <div class="sort">
+        <!-- 判断是否在home组件如果在 home就显示不在就隐藏（显示隐藏）-->
+        <div class="sort" v-show="$route.path === '/' || isShow">
           <div class="all-sort-list2" @click="toSearch">
             <div
               class="item bo"
@@ -90,6 +93,7 @@ export default {
   data() {
     return {
       categoryList: [],
+      isShow: false,
     };
   },
 

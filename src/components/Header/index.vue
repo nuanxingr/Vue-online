@@ -25,7 +25,9 @@
         <h1><router-link to="/"></router-link></h1>
         <form class="header-bottom-form">
           <input type="text" class="header-bottom-input" />
-          <button class="header-bottom-btn">搜索</button>
+          <button class="header-bottom-btn">
+            <router-link to="/search" class="color">搜索</router-link>
+          </button>
         </form>
       </div>
     </div>
@@ -100,9 +102,11 @@ export default {
     .header-bottom-btn {
       width: 80px;
       height: 32px;
-      color: #fff;
       background-color: #ea4a36;
       border: none;
+      .color {
+        color: #fff;
+      }
     }
   }
 }

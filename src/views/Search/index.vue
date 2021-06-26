@@ -1,12 +1,16 @@
 <template>
   <div>
-    <h2>Search...</h2>
+    <TypeNav/>
   </div>
 </template>
 
 <script>
+import TypeNav from '../../components/typeNav/index'
 export default {
-  naem:"Search"
+  naem:"Search",
+  components:{
+    TypeNav
+  }
 }
 </script>
 
