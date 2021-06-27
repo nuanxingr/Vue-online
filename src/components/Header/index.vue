@@ -23,10 +23,10 @@
       </div>
       <div class="header-bottom">
         <h1><router-link to="/"></router-link></h1>
-        <form class="header-bottom-form">
-          <input type="text" class="header-bottom-input" />
+        <form class="header-bottom-form" @submit.prevent="toSearch">
+          <input type="text" class="header-bottom-input" v-model="keyword" />
           <button class="header-bottom-btn">
-            <router-link to="/search" class="color">搜索</router-link>
+            <a to="/search" class="color">搜索</a>
           </button>
         </form>
       </div>
@@ -37,6 +37,28 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      keyword: "",
+    };
+  },
+  methods: {
+   
+    toSearch() {
+       const keyword=this.keyword.trim()
+       const location={
+        name: "Search",
+        
+        //添加上query参数
+        query:this.$route.query,
+      }
+      //当keyword没有值得时候，就不要 携带params参数
+      if(keyword){
+          location.params={keyword}
+      }
+      this.$router.history.push(location);
+    },
+  },
 };
 </script>
 

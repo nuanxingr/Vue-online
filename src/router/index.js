@@ -25,8 +25,12 @@ const routes = [
     component:Register
   },
   {
+    
     name: 'Search',
-    path: '/search',
+    //params参数，路径必须是：xxx写法才可以
+    //xxx?可选的params参数，可以有可以没有
+    //必须要填的params参数，没有就重定向到/
+    path: '/search/:keyword?',
     component:Search
   }
 ]

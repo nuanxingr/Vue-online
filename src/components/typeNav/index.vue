@@ -121,6 +121,8 @@ export default {
           categoryName: categoryname,
           [`category${level}Id`]: categoryid,
         },
+        //携带上params
+        params:this.$router.params
       });
     },
   },
