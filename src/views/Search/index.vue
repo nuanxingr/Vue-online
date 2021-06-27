@@ -19,7 +19,7 @@
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @search="search" />
 
         <!--details-->
         <div class="details clearfix">
@@ -59,7 +59,7 @@
                   <div class="price">
                     <strong>
                       <em>¥</em>
-                      <i>{{goods.price}}</i>
+                      <i>{{ goods.price }}</i>
                     </strong>
                   </div>
                   <div class="attr">
@@ -67,7 +67,7 @@
                       target="_blank"
                       href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
-                      >{{goods.title}}</a
+                      >{{ goods.title }}</a
                     >
                   </div>
                   <div class="commit">
@@ -134,23 +134,53 @@ export default {
     SearchSelector,
     TypeNav,
   },
+  data() {
+    return {
+      options:{
+          category1Id: "",
+        category2Id: "",
+        category3Id: "",
+        categoryName: "",
+        keyword: '',
+        props: [],
+        trademark: "",
+        // 1 综合  2 价格
+        // asc 升序 desc 降序
+        order: "1:desc",
+        pageNo: 1, // 当前页码
+        pageSize: 5, // 每页条数
+      }
+       
+    }
+  },
   computed: {
     ...mapState("search", ["goodsList", "total"]),
   },
   methods: {
     ...mapActions("search", ["searchGoodsList"]),
+    search(newOptions = {}) {
+      console.log(newOptions);
+
+      const options ={
+        //之前的搜索条件
+        ...this.options,
+        //新的搜索条件
+        //利用对象的特点，重名属性后面会覆盖前面的
+        ...newOptions
+      }
+      //特殊处理：prop
+      if(newOptions.prop){
+        options.propsrouter.push(newOptions.prop)
+        delete options.prop;
+      }
+      //将新的搜索条件储存起来
+      this.options=options
+      this.searchGoodsList(newOptions); 
+    },
   },
+
   mounted() {
-    this.searchGoodsList({
-      category3Id: "61",
-      categoryName: "手机",
-      keyword: "华为",
-      order: "1:desc",
-      pageNo: 1,
-      pageSize: 10,
-      props: ["1:1700-2799:价格", "2:6.65-6.74英寸:屏幕尺寸"],
-      trademark: "4:小米",
-    });
+    this.search();
   },
 };
 </script>

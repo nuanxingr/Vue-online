@@ -3,8 +3,16 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
-        <ul class="logo-list">
-          <li v-for="tm in trademarkList" :key="tm.tmId">{{ tm.tmName }}</li>
+        <!-- 品牌列表 -->
+        <!-- 事件委托 -->
+        <ul class="logo-list" @click="searchTrademark">
+          <li
+            v-for="tm in trademarkList"
+            :key="tm.tmId"
+            :data-tm="`${tm.tmId}:${tm.tmName}`"
+          >
+            {{ tm.tmName }}
+          </li>
         </ul>
       </div>
       <div class="ext">
@@ -34,6 +42,16 @@ export default {
   computed: {
     ...mapState("search", ["trademarkList", "attrsList"]), //品牌数据
   },
+  methods: {
+  searchTrademark(e) {
+      const { tm } = e.target.dataset;
+      // 防止重复点击
+      // if (tm === this.options.trademark) return;
+      // 触发自定义事件 --> 将tm参数传递给search组件使用
+      this.$emit("search", { trademark: tm });
+    },
+  },
+ 
 };
 </script>
 
