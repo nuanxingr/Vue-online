@@ -20,12 +20,15 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+    <!-- 属性列表 -->
     <div class="type-wrap" v-for="attr in attrsList" :key="attr.attrId">
       <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
-        <ul class="type-list">
-          <li v-for="attrValue in attr.attrValueList" :key="attrValue.attrId">
-            <a>{{ attrValue }}</a>
+        <ul class="type-list" @click="searchAttr">
+          <li v-for="attrValue in attr.attrValueList" :key="attrValue.index">
+            <a :data-attr="`${attr.attrId}:${attrValue}:${attr.attrName}`">{{
+              attrValue
+            }}</a>
           </li>
         </ul>
       </div>
@@ -36,22 +39,30 @@
 
 <script>
 import { mapState } from "vuex";
+
 export default {
   name: "SearchSelector",
-
+  props: {
+    options: Object,
+  },
   computed: {
-    ...mapState("search", ["trademarkList", "attrsList"]), //品牌数据
+    ...mapState("search", ["trademarkList", "attrsList"]),
   },
   methods: {
-  searchTrademark(e) {
+    searchTrademark(e) {
       const { tm } = e.target.dataset;
       // 防止重复点击
-      // if (tm === this.options.trademark) return;
+      if (tm === this.options.trademark) return;
       // 触发自定义事件 --> 将tm参数传递给search组件使用
       this.$emit("search", { trademark: tm });
     },
+    searchAttr(e) {
+      const { attr } = e.target.dataset;
+      // 防止重复点击
+      if (this.options.props.includes(attr)) return;
+      this.$emit("search", { prop: attr });
+    },
   },
- 
 };
 </script>
 

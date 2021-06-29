@@ -1,9 +1,10 @@
 <template>
   <div>
     <TypeNav />
+
     <div class="main">
       <div class="py-container">
-        <!--bread-->
+        <!-- 搜索条件 -->
         <div class="bread">
           <ul class="fl sui-breadcrumb">
             <li>
@@ -11,50 +12,120 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- keyword -->
+            <li
+              class="with-x"
+              v-show="$route.params.keyword"
+              @click="delKeyword"
+            >
+              {{ $route.params.keyword }}<i>×</i>
+            </li>
+            <!-- categoryName -->
+            <li
+              class="with-x"
+              v-show="$route.query.categoryName"
+              @click="delCategoryName"
+            >
+              {{ $route.query.categoryName }}<i>×</i>
+            </li>
+            <!-- trademark -->
+            <li class="with-x" v-show="options.trademark" @click="delTrademark">
+              {{ options.trademark.split(":")[1] }}<i>×</i>
+            </li>
+            <!-- props -->
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="prop"
+              @click="delProp(index)"
+            >
+              {{ `${prop.split(":")[2]}:${prop.split(":")[1]}` }}<i>×</i>
+            </li>
           </ul>
         </div>
 
-        <!--selector-->
-        <SearchSelector @search="search" />
+        <!-- 
+          搜索条件选择器 
+          props
+          自定义事件
+        -->
+        <!-- <SearchSelector :search="search" /> -->
 
-        <!--details-->
+        <SearchSelector @search="search" :options="options" />
+
+        <!-- 商品列表 -->
         <div class="details clearfix">
+          <!-- 商品列表头部：排序功能 -->
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  :class="{
+                    active: order.orderName === '1',
+                  }"
+                  @click="setOrder('1')"
+                >
+                  <a>
+                    <span>综合</span>
+                    <span
+                      v-show="order.orderName === '1'"
+                      :class="[
+                        'iconfont',
+                        order.orderType === 'asc'
+                          ? 'icon-direction-up'
+                          : 'icon-direction-down',
+                      ]"
+                    >
+                    </span>
+                  </a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li
+                  :class="{
+                    active: order.orderName === '2',
+                  }"
+                  @click="setOrder('2')"
+                >
+                  <a>
+                    <span>价格</span>
+                    <span
+                      v-show="order.orderName === '2'"
+                      :class="[
+                        'iconfont',
+                        order.orderType === 'asc'
+                          ? 'icon-direction-up'
+                          : 'icon-direction-down',
+                      ]"
+                    ></span>
+                  </a>
                 </li>
               </ul>
             </div>
           </div>
+          <!-- 商品列表详情 -->
           <div class="goods-list">
             <ul class="yui3-g">
               <li class="yui3-u-1-5" v-for="goods in goodsList" :key="goods.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"
-                      ><img :src="goods.defaultImg"
-                    /></a>
+                    <router-link
+                      :to="{
+                        name: 'Detail',
+                        params: {
+                          id: goods.id,
+                        },
+                      }"
+                    >
+                      <img :src="goods.defaultImg" />
+                    </router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -64,8 +135,6 @@
                   </div>
                   <div class="attr">
                     <a
-                      target="_blank"
-                      href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
                       >{{ goods.title }}</a
                     >
@@ -74,48 +143,38 @@
                     <i class="command">已有<span>2000</span>人评价</i>
                   </div>
                   <div class="operate">
-                    <a
-                      href="success-cart.html"
-                      target="_blank"
-                      class="sui-btn btn-bordered btn-danger"
-                      >加入购物车</a
-                    >
-                    <a href="javascript:void(0);" class="sui-btn btn-bordered"
-                      >收藏</a
-                    >
+                    <a class="sui-btn btn-bordered btn-danger">加入购物车</a>
+                    <a class="sui-btn btn-bordered">收藏</a>
                   </div>
                 </div>
               </li>
             </ul>
           </div>
+          <!-- 分页器 -->
           <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
+            <!-- <Pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[100, 200, 300, 400]"
+              :page-size="100"
+              :total="400"
+            /> -->
+
+            <!-- 
+              v-bind:xxx.sync
+              .sync修饰符
+                即会传递xxx数据，又会传递一个更新数据的事件 update:xxx 
+                这个事件不需要定义，只要触发就会更新xxx数据
+             -->
+           <!--  <Pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page.sync="options.pageNo"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size.sync="options.pageSize"
+              :total="total"
+            /> -->
           </div>
         </div>
       </div>
@@ -125,23 +184,21 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import SearchSelector from "./SearchSelector/SearchSelector";
 import TypeNav from "../../components/typeNav/index.vue";
+import SearchSelector from "./SearchSelector/SearchSelector";
+// import Pagination from "../../components/Pagination";
+
 export default {
   name: "Search",
-
-  components: {
-    SearchSelector,
-    TypeNav,
-  },
   data() {
     return {
-      options:{
-          category1Id: "",
-        category2Id: "",
-        category3Id: "",
-        categoryName: "",
-        keyword: '',
+      // 搜索条件
+      options: {
+        // category1Id: "",
+        // category2Id: "",
+        // category3Id: "",
+        // categoryName: "",
+        // keyword: '',
         props: [],
         trademark: "",
         // 1 综合  2 价格
@@ -149,38 +206,168 @@ export default {
         order: "1:desc",
         pageNo: 1, // 当前页码
         pageSize: 5, // 每页条数
-      }
-       
-    }
+      },
+    };
   },
   computed: {
     ...mapState("search", ["goodsList", "total"]),
+    order() {
+      // 例如：['1', 'desc'] [orderName, orderType]
+      const [orderName, orderType] = this.options.order.split(":");
+
+      return {
+        orderName,
+        orderType,
+      };
+    },
   },
   methods: {
     ...mapActions("search", ["searchGoodsList"]),
     search(newOptions = {}) {
-      console.log(newOptions);
+      // console.log(newOptions); // 可能得到trademark和prop数据
+      /*
+        考虑如何获取搜索条件
+          1. category3Id: "61",
+             categoryName: "手机",
+            this.$route.query
 
-      const options ={
-        //之前的搜索条件
+          2. keyword: "",
+            this.$route.params
+
+          3. trademark: ""
+            子组件SearchSelector点击获取trademark
+            通过自定义事件机制传递给Search组件使用
+
+          4. props: [],
+            子组件SearchSelector点击获取prop
+            通过自定义事件机制传递给Search组件使用
+
+        如何整合所有数据?
+          
+          需求：前面点击过的数据要保留下来，作为下一次请求的数据要携带上
+          例如：先点击了品牌（按照品牌去搜索数据），
+               在点击属性（按照品牌和属性一起去搜索）
+               在点击另外一个属性（按照品牌和两个属性一起去搜索）
+          问题：
+            1. newOptions.prop , 我们需要的是props
+               将多个prop整合成一个props，发送请求携带上
+            2. 需要保存之前的搜索条件，下次搜索时应该再上一次的基础上去搜索
+          解决：
+            需要将之前的搜索条件给存储起来，下一次搜索的时候就可以使用了
+      */
+
+      // 整合一个统一的搜索条件
+      // 将旧条件和新条件合并
+      const options = {
+        // 之前的搜索条件
         ...this.options,
-        //新的搜索条件
-        //利用对象的特点，重名属性后面会覆盖前面的
-        ...newOptions
-      }
-      //特殊处理：prop
-      if(newOptions.prop){
-        options.propsrouter.push(newOptions.prop)
+        // 新的搜索条件
+        // 利用对象的特点，重名属性后面会覆盖前面的
+        ...newOptions, // prop和trademark
+      };
+
+      // 发送请求需要的参数是props
+      // 得到的参数是prop
+      // 将prop添加到props中才行
+
+      // 特殊处理：prop
+      if (newOptions.prop) {
+        options.props.push(newOptions.prop);
+        // 删除多余的属性
         delete options.prop;
       }
-      //将新的搜索条件储存起来
-      this.options=options
-      this.searchGoodsList(newOptions); 
+
+      // 将新的搜索条件存储起来
+      // 更新
+      this.options = options;
+
+      // 按照新条件去搜索
+      this.searchGoodsList({
+        ...options,
+        // 每次搜索时都使用最新的数据进行搜索
+        // categoryName category1Id category2Id category3Id
+        ...this.$route.query,
+        // keyword
+        ...this.$route.params,
+      });
+    },
+
+    /*
+      问题：当页面的搜索条件发生变化（query、params、删除条件）
+      不会重新搜索
+      解决：
+        1. 当 query、params 发生变化，重新搜索  
+          监视$route
+        2. 删除条件
+          手动调用搜索方法
+    */
+    // 删除搜索条件
+    delKeyword() {
+      // $route $router $store props数据等，都是只读数据
+      this.$router.history.push({
+        name: "Search",
+        query: this.$route.query,
+        // 不传params，自然params就会被清空了～
+      });
+    },
+    delCategoryName() {
+      this.$router.history.push({
+        name: "Search",
+        params: this.$route.params,
+        // 不传query，自然query就会被清空了～
+      });
+    },
+    delTrademark() {
+      this.options.trademark = "";
+      this.search();
+    },
+    delProp(index) {
+      this.options.props.splice(index, 1);
+      this.search();
+    },
+
+    // 设置排序
+    setOrder(orderName) {
+      if (this.order.orderName === orderName) {
+        // 第二次点击，如果点击的是相同的orderName,orderType要取反
+        this.options.order = `${orderName}:${
+          this.order.orderType === "asc" ? "desc" : "asc"
+        }`;
+      } else {
+        // 如果点击的是不同的orderName,orderType默认为desc
+        this.options.order = `${orderName}:desc`;
+      }
+
+      this.search();
+    },
+
+    // 当当前页码发生变化时触发的
+    handleCurrentChange(pageNo) {
+      this.search({
+        pageNo,
+      });
+    },
+    // 当每页条数发生变化时触发的
+    handleSizeChange(pageNo, pageSize) {
+      this.search({
+        pageNo,
+        pageSize,
+      });
     },
   },
-
   mounted() {
     this.search();
+  },
+  watch: {
+    // 监视$route，当路径发生变化就会触发（query、params）
+    $route() {
+      this.search();
+    },
+  },
+  components: {
+    SearchSelector,
+    TypeNav,
+    // Pagination,
   },
 };
 </script>
@@ -429,90 +616,8 @@ export default {
       }
 
       .page {
-        width: 733px;
         height: 66px;
         overflow: hidden;
-        float: right;
-
-        .sui-pagination {
-          margin: 18px 0;
-
-          ul {
-            margin-left: 0;
-            margin-bottom: 0;
-            vertical-align: middle;
-            width: 490px;
-            float: left;
-
-            li {
-              line-height: 18px;
-              display: inline-block;
-
-              a {
-                position: relative;
-                float: left;
-                line-height: 18px;
-                text-decoration: none;
-                background-color: #fff;
-                border: 1px solid #e0e9ee;
-                margin-left: -1px;
-                font-size: 14px;
-                padding: 9px 18px;
-                color: #333;
-              }
-
-              &.active {
-                a {
-                  background-color: #fff;
-                  color: #e1251b;
-                  border-color: #fff;
-                  cursor: default;
-                }
-              }
-
-              &.prev {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-
-              &.disabled {
-                a {
-                  color: #999;
-                  cursor: default;
-                }
-              }
-
-              &.dotted {
-                span {
-                  margin-left: -1px;
-                  position: relative;
-                  float: left;
-                  line-height: 18px;
-                  text-decoration: none;
-                  background-color: #fff;
-                  font-size: 14px;
-                  border: 0;
-                  padding: 9px 18px;
-                  color: #333;
-                }
-              }
-
-              &.next {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-            }
-          }
-
-          div {
-            color: #333;
-            font-size: 14px;
-            float: right;
-            width: 241px;
-          }
-        }
       }
     }
   }

@@ -12,7 +12,7 @@ const actions = {
   async searchGoodsList({ commit }, options) {
     console.log("+", options);
 
-    const res = await reqSearchGoodsList({ options });
+    const res = await reqSearchGoodsList( options );
     console.log("@", res);
     commit("SEARCH_GOODS_LIST", res);
   },
