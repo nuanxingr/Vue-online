@@ -5,6 +5,8 @@ import Home from '../views/Home/index.vue';
 import Login from '../views/Login/index.vue';
 import Register from '../views/Register';
 import Search from '../views/Search';
+import Detail from '../views/Detail';
+
 
 Vue.use(VueRouter)
 
@@ -32,13 +34,27 @@ const routes = [
     //必须要填的params参数，没有就重定向到/
     path: '/search/:keyword?',
     component:Search
-  }
+  },
+  {
+    name: 'Detail',
+    path: '/detail',
+    component:Detail
+  },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+    //路由跳转控制滚动条的位置
+    scrollBehavior () {
+      // return 期望滚动到哪个的位置
+      return{
+        x:0,
+        y:0
+      }
+    }
+ 
 })
 
 export default router

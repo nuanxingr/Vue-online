@@ -117,6 +117,7 @@
                 <div class="list-wrap">
                   <div class="p-img">
                     <router-link
+                    
                       :to="{
                         name: 'Detail',
                         params: {
