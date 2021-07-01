@@ -1,7 +1,7 @@
 import axios from "axios";
 import Nprogress from "nprogress";
-import 'nprogress/nprogress.css'
-
+import "nprogress/nprogress.css";
+import getUid from "./uid";
 const messages = {
   401: "未知错误",
   403: "禁止访问",
@@ -19,12 +19,16 @@ const request = axios.create({
 
 //设置拦截器
 //请求拦截器
+// uuidv4()要定义在外面因为拦截器执行一次
+// const uid = uuidv4();
 request.interceptors.request.use(
   (config) => {
     console.log(111);
     //config是请求的配置对象，将来发送请求的配置都是从config中读取
     //请求成功不代表功能成功
-    Nprogress.start()
+    config.headers.userTempId = getUid();
+
+    Nprogress.start();
     return config;
   },
   () => {
@@ -36,7 +40,7 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (request) => {
     console.log(333);
-    Nprogress.done()
+    Nprogress.done();
     if (request.data.code === 200) {
       return request.data.data;
     } else {
@@ -47,7 +51,7 @@ request.interceptors.response.use(
   //响应失败的回调
   (error) => {
     let message = "未知错误";
-    Nprogress.done()
+    Nprogress.done();
     console.dir(error);
     if (error.response) {
       message = messages[error.response.status];

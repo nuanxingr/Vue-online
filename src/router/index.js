@@ -7,6 +7,7 @@ import Register from "../views/Register";
 import Search from "../views/Search";
 import Detail from "../views/Detail";
 import AddCartSuccess from "../views/AddCartSuccess";
+import ShopCart from "../views/ShopCart";
 
 Vue.use(VueRouter);
 
@@ -44,6 +45,12 @@ const routes = [
     name: "AddCartSuccess",
     path: "/addcartsuccess",
     component: AddCartSuccess,
+  },
+  //购物车结算
+  {
+    name: "ShopCart",
+    path: "/shopcart",
+    component: ShopCart,
   },
 ];
 
