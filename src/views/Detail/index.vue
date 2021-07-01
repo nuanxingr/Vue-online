@@ -94,7 +94,7 @@
             <div class="cartWrap">
               <InputNumber v-model="count" :min="1" :max="100" />
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -338,6 +338,7 @@ import TypeNav from "../../components/typeNav";
 import ImageList from "./ImageList/ImageList";
 import Zoom from "./Zoom/Zoom";
 import InputNumber from "./inputNumber/index";
+import { reqAddCart } from "../../api/shopcart.js";
 export default {
   name: "Detail",
   data() {
@@ -353,6 +354,30 @@ export default {
   },
   methods: {
     ...mapActions("detail", ["getGoodsDetail"]),
+
+    //添加购物车发送请求
+    async addCart() {
+      try {
+        await reqAddCart(this.$route.params.id, this.count);
+        //请求成功跳转路由
+        this.$router.history.push("/addcartsuccess");
+
+        //保存数据
+        const { skuDefaultImg, skuName, price } = this.goods.skuInfo;
+
+        sessionStorage.setItem(
+          "goods",
+          JSON.stringify({
+            img: skuDefaultImg,
+            skuName,
+            price,
+            skyNum:this.count
+          })
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   mounted() {
     this.getGoodsDetail(this.$route.params.id);
