@@ -92,7 +92,7 @@
               </dl>
             </div>
             <div class="cartWrap">
-              <InputNumber  :min='1' :max='100'/>
+              <InputNumber v-model="count" :min="1" :max="100" />
               <div class="add">
                 <a href="javascript:">加入购物车</a>
               </div>
@@ -342,7 +342,10 @@ export default {
   name: "Detail",
   data() {
     return {
+      //图片的下标
       currentIndex: 0,
+      //商品数量
+      count: 1,
     };
   },
   computed: {
