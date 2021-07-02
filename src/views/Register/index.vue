@@ -24,12 +24,18 @@
           />
           <span class="error-msg">{{ errors[0] }}</span>
         </ValidationProvider>
-        <div class="content">
+        <ValidationProvider
+          class="content"
+          rules="required|phone"
+          :debounce="1000"
+          v-slot="{ errors }"
+          tag="div"
+        >
           <label>验证码:</label>
           <input type="text" placeholder="请输入验证码" v-model="user.code" />
-          <button>发送验证码</button>
-          <span class="error-msg">错误提示信息</span>
-        </div>
+          <button :disabled="isDisabled" @click="sendCode">发送验证码</button>
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
         <ValidationProvider
           class="content"
           rules="passwordRequired|password"
@@ -120,63 +126,11 @@
       </ValidationObserver>  
 */
 
-import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-//定义表单规则
-extend("required", {
-  validate(value) {
-    //value就是校验的值
-    return !!value;
-  },
-  message: "请输入手机号", //校验失败提示的信息
-});
-const phoneReg = /^1[0-9]{10}$/;
+import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { reqSendCode } from "../../api/user.js";
+import "./validate"; //引入表单校验规则
+import { phoneReg } from "../../utils/reqs";
 
-extend("phone", {
-  validate(value) {
-    console.log(value);
-    //value就是校验的值
-    return phoneReg.test(value);
-  },
-  message: "请输入合法手机号", //校验失败提示的信息
-});
-
-// 密码校验规则
-extend("passwordRequired", {
-  validate(value) {
-    //value就是校验的值
-    return !!value;
-  },
-  message: "请输入密码", //校验失败提示的信息
-});
-const passwordReg = /^[0-9]{6,18}$/;
-
-extend("password", {
-  validate(value) {
-    console.log(value);
-    //value就是校验的值
-    return passwordReg.test(value);
-  },
-  message: "请输入六位数以上且只能为数字", //校验失败提示的信息
-});
-
-// 确认密码校验
-extend("rePasswordRequired", {
-  validate(value) {
-    //value就是校验的值
-    return !!value;
-  },
-  message: "请输入密码", //校验失败提示的信息
-});
-
-extend("rePassword", {
-  //结构密码{ password }才能拿到密码
-  validate(rePassword, { password }) {
-    //判断密码是否相等
-    return rePassword === password;
-  },
-  message: "两次密码不一致", //校验失败提示的信息
-  params: ["password"], //声明接收参数
-});
 export default {
   name: "Register",
   data() {
@@ -193,6 +147,14 @@ export default {
     //
     submit() {
       console.log("校验成功");
+    },
+    async sendCode() {
+      await reqSendCode(this.user.phone);
+    },
+  },
+  computed: {
+    isDisabled() {
+      return phoneReg.test(this.user.phone) ? false : true;
     },
   },
   components: {
