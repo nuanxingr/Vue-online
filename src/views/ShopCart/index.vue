@@ -47,7 +47,7 @@
             <span class="sum"></span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet"> 删除</a>
+            <a href="#none" class="sindelet" @click="delCart(cart)"> 删除</a>
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -86,7 +86,7 @@ import {
   reqGetCartList,
   reqUpdateCartChecked,
   reqAddCart,
-  // reqDelCart,
+  reqDelCart,
 } from "../../api/shopcart";
 
 export default {
@@ -145,13 +145,13 @@ export default {
     },
 
     //删除单个商品
-    // async delCart(cart) {
-    //   if (window.confirm(`你确认要删除${cart.skuName}吗`)) {
-    //     const { skuId } = cart;
-    //     await reqDelCart(cart.skuId);
-    //     this.cartList = this.cartList.filter((cart) => cart.skuId !== skuId);
-    //   }
-    // },
+    async delCart(cart) {
+      if (window.confirm(`你确认要删除${cart.skuName}吗`)) {
+        const { skuId } = cart;
+        await reqDelCart(cart.skuId);
+        this.cartList = this.cartList.filter((cart) => cart.skuId !== skuId);
+      }
+    },
   },
 };
 </script>
