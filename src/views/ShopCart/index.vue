@@ -33,7 +33,7 @@
             <span class="price">{{ cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
+            <a href="javascript:void(0)" class="mins" @click="count(cart)">-</a>
             <input
               autocomplete="off"
               type="text"
@@ -41,13 +41,13 @@
               minnum="1"
               class="itxt"
             />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a href="javascript:void(0)" class="plus" @click="add(cart)">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum"></span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a href="#none" class="sindelet"> 删除</a>
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -82,7 +82,12 @@
 </template>
 
 <script>
-import { reqGetCartList, reqUpdateCartChecked } from "../../api/shopcart";
+import {
+  reqGetCartList,
+  reqUpdateCartChecked,
+  reqAddCart,
+  // reqDelCart,
+} from "../../api/shopcart";
 
 export default {
   name: "ShopCart",
@@ -115,7 +120,9 @@ export default {
         }, 0);
     },
   },
+
   methods: {
+    //更新商品
     async updateCartChecked(cart) {
       const isChecked = 1 - cart.isChecked;
       await reqUpdateCartChecked(cart.skuId, isChecked);
@@ -123,6 +130,28 @@ export default {
       //改变isCheckde的值
       cart.isChecked = isChecked;
     },
+    // 添加商品数量
+    async add(cart) {
+      const skuNum = cart.skuNum + 1;
+      await reqAddCart(cart.skuId, skuNum);
+      cart.skuNum++;
+    },
+    async count(cart) {
+      const { skuNum } = cart;
+      if (skuNum === 1) return;
+      await reqAddCart(cart.skuId, skuNum - 1);
+
+      cart.skuNum--;
+    },
+
+    //删除单个商品
+    // async delCart(cart) {
+    //   if (window.confirm(`你确认要删除${cart.skuName}吗`)) {
+    //     const { skuId } = cart;
+    //     await reqDelCart(cart.skuId);
+    //     this.cartList = this.cartList.filter((cart) => cart.skuId !== skuId);
+    //   }
+    // },
   },
 };
 </script>

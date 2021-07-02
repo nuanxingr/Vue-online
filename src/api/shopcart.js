@@ -20,3 +20,9 @@ export const reqUpdateCartChecked = (skuID, isChecked) => {
     url: `/cart/checkCart/${skuID}/${isChecked}`,
   });
 };
+export const reqDelCart = (skuId) => {
+  return request({
+    method: "DELETE",
+    url: `cart/deleteCart/${skuId}`,
+  });
+};
