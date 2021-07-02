@@ -88,6 +88,38 @@
 </template>
 
 <script>
+/*  
+  vee-validate
+  1. 文档
+    https://vee-validate.logaretm.com/v3/guide/forms.html#basic-example
+  2. 下载
+    npm i vee-validate
+  3. 使用
+    - 定义表单校验规则
+      import { extend } from 'vee-validate';
+      extend('规则名称', {
+        validate(value) {
+          // value就是校验的值
+          return xxx; // 返回值true校验成功，反之校验失败
+        },
+        message: 'xxx' // 校验失败提示的错误信息
+      });
+    - 校验表单
+      注册两个组件 ValidationObserver ValidationProvider
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <form @submit.prevent="handleSubmit(onSubmit)">
+          校验表单
+            rules 表单校验规则
+            v-slot="{ errors }" 通过作用域插槽得到校验失败的错误 errors
+          <ValidationProvider rules="required|email" v-slot="{ errors }">
+            <input v-model="email" type="email">
+            <span>{{ errors[0] }}</span>
+          </ValidationProvider> 
+          ...
+        </form>  
+      </ValidationObserver>  
+*/
+
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 //定义表单规则
 extend("required", {
